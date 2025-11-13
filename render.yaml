@@ -1,0 +1,53 @@
+services:
+  # Django Backend API
+  - type: web
+    name: pos-backend
+    env: python
+    plan: free
+    buildCommand: cd backend && pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: cd backend && gunicorn pos_system.wsgi:application --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: False
+      - key: ALLOWED_HOSTS
+        value: pos-backend.onrender.com,*.onrender.com
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pos-database
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: pos-redis
+          type: redis
+          property: connectionString
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://pos-frontend.onrender.com
+      - key: DJANGO_SETTINGS_MODULE
+        value: pos_system.settings
+
+  # React Frontend
+  - type: static
+    name: pos-frontend
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: ./frontend/dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://pos-backend.onrender.com/api
+
+  # PostgreSQL Database
+  - type: pspg
+    name: pos-database
+    plan: free
+    databaseName: pos_system
+    user: pos_user
+
+  # Redis (Optional - for caching and Celery)
+  - type: redis
+    name: pos-redis
+    plan: free
+    maxmemoryPolicy: allkeys-lru
+

@@ -1,0 +1,70 @@
+# Django Core
+Django==5.0.6
+djangorestframework==3.15.1
+django-cors-headers==4.3.1
+django-environ==0.11.2
+
+# Database
+psycopg2-binary==2.9.9
+dj-database-url==2.1.0
+
+# Authentication & Security
+djangorestframework-simplejwt==5.3.1
+django-allauth==0.57.0
+cryptography==42.0.5
+
+# Redis & Caching
+redis==5.0.6
+django-redis==5.4.0
+hiredis==2.3.2
+
+# Celery for Async Tasks
+celery==5.3.6
+django-celery-beat==2.7.0
+django-celery-results==2.5.1
+
+# Email
+django-anymail==10.2
+
+# PDF Generation
+reportlab==4.1.0
+weasyprint==61.2
+Pillow==10.4.0
+
+# API Documentation
+drf-spectacular==0.27.1
+
+# Filtering
+django-filter==24.3
+
+# Utilities
+python-dateutil==2.9.0
+pytz==2024.1
+requests==2.31.0
+
+# QR Code & Barcode
+qrcode==7.4.2
+python-barcode==0.15.1
+
+# OCR (Free - Tesseract)
+pytesseract==0.3.10
+
+# AI/ML for Insights (Optional - using free APIs)
+openai==1.12.0  # For AI insights (can use free tier)
+huggingface-hub==0.20.0  # For free AI models
+transformers==4.37.0  # For local AI models (optional)
+replicate==0.25.1  # For Replicate API (free tier available)
+imageio==2.34.0  # For video generation
+imageio-ffmpeg==0.5.1  # For video encoding
+numpy==1.26.4  # For image/video processing
+
+# Monitoring & Logging
+django-debug-toolbar==4.4.4
+
+# Production Server
+gunicorn==21.2.0 
+whitenoise==6.6.0
+
+# Payment Gateway
+razorpay==1.4.1
+
