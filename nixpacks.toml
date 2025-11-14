@@ -1,8 +1,9 @@
 # Nixpacks configuration for Railway
 # This tells Railway to use Python build properly
+# Note: pip comes automatically with Python, no need to specify it separately
 
 [phases.setup]
-nixPkgs = ["python312", "pip"]
+nixPkgs = ["python312"]
 
 [phases.install]
 cmds = [
