@@ -1,11 +1,8 @@
 # Nixpacks configuration for Railway
 # This tells Railway to use Python build properly
 
-[providers]
-python = "3.12"
-
 [phases.setup]
-nixPkgs = ["python312", "pip", "postgresql"]
+nixPkgs = ["python312", "pip"]
 
 [phases.install]
 cmds = [
