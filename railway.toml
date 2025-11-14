@@ -1,0 +1,11 @@
+# Railway configuration file (alternative to railway.json)
+# This file takes precedence over railway.json
+
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "cd backend && gunicorn pos_system.wsgi:application --bind 0.0.0.0:$PORT"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+

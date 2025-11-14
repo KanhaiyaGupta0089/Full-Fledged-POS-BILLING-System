@@ -1,0 +1,23 @@
+# Nixpacks configuration for Railway
+# This tells Railway to use Python build properly
+
+[providers]
+python = "3.12"
+
+[phases.setup]
+nixPkgs = ["python312", "pip", "postgresql"]
+
+[phases.install]
+cmds = [
+  "pip install --upgrade pip",
+  "pip install -r backend/requirements.txt"
+]
+
+[phases.build]
+cmds = [
+  "cd backend && python manage.py collectstatic --noinput || true"
+]
+
+[start]
+cmd = "cd backend && gunicorn pos_system.wsgi:application --bind 0.0.0.0:$PORT"
+
