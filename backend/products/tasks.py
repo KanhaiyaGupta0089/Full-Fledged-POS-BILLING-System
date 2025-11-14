@@ -80,3 +80,4 @@ def generate_labels_pdf_task(self, product_ids=None, labels_per_page=6):
 
 
 
+

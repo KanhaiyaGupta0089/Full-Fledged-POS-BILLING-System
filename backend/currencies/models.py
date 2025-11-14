@@ -64,3 +64,4 @@ class ExchangeRateHistory(models.Model):
 
 
 
+

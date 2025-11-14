@@ -8,3 +8,4 @@ class ExpensesConfig(AppConfig):
 
 
 
+

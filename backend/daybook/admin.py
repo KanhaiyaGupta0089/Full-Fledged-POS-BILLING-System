@@ -18,3 +18,4 @@ class DayBookEntryAdmin(admin.ModelAdmin):
 
 
 
+

@@ -34,3 +34,4 @@ class InventoryTransactionAdmin(admin.ModelAdmin):
 
 
 
+

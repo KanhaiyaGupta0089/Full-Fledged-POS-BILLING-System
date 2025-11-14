@@ -12,3 +12,4 @@ __all__ = ['Customer', 'CustomerPurchaseHistory', 'CustomerCommunication']
 
 
 
+

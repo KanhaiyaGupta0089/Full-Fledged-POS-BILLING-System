@@ -1,0 +1,27 @@
+# Docker ignore file
+node_modules/
+venv/
+env/
+.venv
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.git/
+.gitignore
+.env
+.env.local
+*.log
+db.sqlite3
+media/
+staticfiles/
+frontend/
+*.md
+!README.md
+

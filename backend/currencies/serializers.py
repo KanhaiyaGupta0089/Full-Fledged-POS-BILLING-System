@@ -24,3 +24,4 @@ class ExchangeRateHistorySerializer(serializers.ModelSerializer):
 
 
 
+
