@@ -5,12 +5,35 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularSwaggerView,
 )
 
+@require_http_methods(["GET"])
+def root_view(request):
+    """Root view that provides API information and links"""
+    return JsonResponse({
+        'message': 'POS Billing and Inventory System API',
+        'version': '1.0.0',
+        'documentation': {
+            'swagger_ui': request.build_absolute_uri('/api/docs/'),
+            'schema': request.build_absolute_uri('/api/schema/'),
+        },
+        'endpoints': {
+            'admin': request.build_absolute_uri('/admin/'),
+            'api_auth': request.build_absolute_uri('/api/auth/'),
+            'api_products': request.build_absolute_uri('/api/products/'),
+            'api_inventory': request.build_absolute_uri('/api/inventory/'),
+            'api_billing': request.build_absolute_uri('/api/billing/'),
+            'api_payments': request.build_absolute_uri('/api/payments/'),
+        }
+    })
+
 urlpatterns = [
+    path('', root_view, name='root'),
     path('admin/', admin.site.urls),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
