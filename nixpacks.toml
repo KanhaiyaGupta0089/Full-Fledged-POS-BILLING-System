@@ -12,8 +12,8 @@ cmds = [
 
 [phases.build]
 cmds = [
-  "cd backend && python3 manage.py migrate --noinput || true",
-  "cd backend && python3 manage.py create_dummy_data || true",
+  "cd backend && python3 manage.py migrate --noinput",
+  "cd backend && python3 manage.py create_dummy_data || echo 'Dummy data creation skipped (may already exist)'",
   "cd backend && python3 manage.py collectstatic --noinput || true"
 ]
 
