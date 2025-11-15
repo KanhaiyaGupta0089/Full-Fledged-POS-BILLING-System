@@ -66,3 +66,4 @@ class DayBookEntryViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 
+

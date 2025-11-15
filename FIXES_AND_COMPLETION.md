@@ -196,3 +196,4 @@ celery -A pos_system beat --loglevel=info
 
 
 
+

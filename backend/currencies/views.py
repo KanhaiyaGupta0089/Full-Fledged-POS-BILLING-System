@@ -47,3 +47,4 @@ class ExchangeRateHistoryViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 
+

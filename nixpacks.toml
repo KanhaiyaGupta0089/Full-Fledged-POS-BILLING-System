@@ -1,19 +1,19 @@
 # Nixpacks configuration for Railway
 # This tells Railway to use Python build properly
-# Note: pip comes automatically with Python, no need to specify it separately
+# Note: Use python3 -m pip instead of just pip to ensure it's found in PATH
 
 [phases.setup]
 nixPkgs = ["python312"]
 
 [phases.install]
 cmds = [
-  "pip install --upgrade pip",
-  "pip install -r backend/requirements.txt"
+  "python3 -m pip install --upgrade pip",
+  "python3 -m pip install -r backend/requirements.txt"
 ]
 
 [phases.build]
 cmds = [
-  "cd backend && python manage.py collectstatic --noinput || true"
+  "cd backend && python3 manage.py collectstatic --noinput || true"
 ]
 
 [start]
