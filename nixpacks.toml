@@ -12,6 +12,7 @@ cmds = [
 
 [phases.build]
 cmds = [
+  "cd backend && python3 manage.py migrate --noinput || true",
   "cd backend && python3 manage.py collectstatic --noinput || true"
 ]
 
