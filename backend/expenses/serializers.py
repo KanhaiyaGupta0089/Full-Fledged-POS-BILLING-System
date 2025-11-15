@@ -15,8 +15,8 @@ class ExpenseCategorySerializer(serializers.ModelSerializer):
 
 class ExpenseSerializer(serializers.ModelSerializer):
     """Expense serializer"""
-    category_name = serializers.CharField(source='category.name', read_only=True)
-    created_by_name = serializers.CharField(source='created_by.get_full_name', read_only=True)
+    category_name = serializers.CharField(source='category.name', read_only=True, allow_null=True)
+    created_by_name = serializers.SerializerMethodField()
     total_amount = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     category_id = serializers.IntegerField(write_only=True, required=False)
     receipt_image_url = serializers.SerializerMethodField()
@@ -32,6 +32,12 @@ class ExpenseSerializer(serializers.ModelSerializer):
             request = self.context.get('request')
             if request:
                 return request.build_absolute_uri(obj.receipt_image.url)
+        return None
+    
+    def get_created_by_name(self, obj):
+        """Get created by name safely"""
+        if obj.created_by:
+            return obj.created_by.get_full_name() or obj.created_by.username
         return None
     
     def create(self, validated_data):
