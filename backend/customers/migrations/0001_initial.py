@@ -52,48 +52,9 @@ class Migration(migrations.Migration):
                 'ordering': ['-created_at'],
             },
         ),
-        # CustomerCommunication and CustomerPurchaseHistory already exist from billing.0003
-        # Use SeparateDatabaseAndState to register them in Django state without creating tables
-        migrations.SeparateDatabaseAndState(
-            database_operations=[
-                # Tables already exist, so no database operations needed
-            ],
-            state_operations=[
-                migrations.CreateModel(
-                    name='CustomerCommunication',
-                    fields=[
-                        ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                        ('communication_type', models.CharField(choices=[('email', 'Email'), ('sms', 'SMS'), ('whatsapp', 'WhatsApp'), ('call', 'Phone Call'), ('visit', 'In-Store Visit')], max_length=20)),
-                        ('subject', models.CharField(blank=True, max_length=200)),
-                        ('message', models.TextField()),
-                        ('sent_at', models.DateTimeField(auto_now_add=True)),
-                        ('is_read', models.BooleanField(default=False)),
-                        ('read_at', models.DateTimeField(blank=True, null=True)),
-                        ('customer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='communications', to='customers.customer')),
-                        ('sent_by', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
-                    ],
-                    options={
-                        'db_table': 'customer_communications',
-                        'ordering': ['-sent_at'],
-                    },
-                ),
-                migrations.CreateModel(
-                    name='CustomerPurchaseHistory',
-                    fields=[
-                        ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                        ('total_amount', models.DecimalField(decimal_places=2, max_digits=10)),
-                        ('items_count', models.IntegerField(default=0)),
-                        ('created_at', models.DateTimeField(auto_now_add=True)),
-                        ('customer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='purchase_history', to='customers.customer')),
-                        ('invoice', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='customer_history', to='billing.invoice')),
-                    ],
-                    options={
-                        'db_table': 'customer_purchase_history',
-                        'ordering': ['-created_at'],
-                    },
-                ),
-            ],
-        ),
+        # CustomerCommunication and CustomerPurchaseHistory are defined in billing app
+        # They are already created by billing.0003 migration, so we don't create them here
+        # The customers app just re-exports them from billing.models
         migrations.AddIndex(
             model_name='customer',
             index=models.Index(fields=['phone'], name='customers_e_phone_4144ee_idx'),
@@ -109,13 +70,5 @@ class Migration(migrations.Migration):
         migrations.AddIndex(
             model_name='customer',
             index=models.Index(fields=['is_active'], name='customers_e_is_acti_8195ee_idx'),
-        ),
-        migrations.AddIndex(
-            model_name='customercommunication',
-            index=models.Index(fields=['customer', 'sent_at'], name='customer_co_custome_85d74a_idx'),
-        ),
-        migrations.AddIndex(
-            model_name='customerpurchasehistory',
-            index=models.Index(fields=['customer', 'created_at'], name='customer_pu_custome_0c162a_idx'),
         ),
     ]
