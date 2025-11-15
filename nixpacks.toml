@@ -1,13 +1,13 @@
 # Nixpacks configuration for Railway
 # This tells Railway to use Python build properly
-# Note: Nix Python doesn't include pip by default, so we install it first using get-pip.py
+# Note: Nix Python is externally managed, so we use --break-system-packages flag
 
 [phases.setup]
 nixPkgs = ["python312", "curl"]
 
 [phases.install]
 cmds = [
-  "curl -sS https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py && export PATH=\"$HOME/.local/bin:$PATH\" && python3 -m pip install --upgrade pip && python3 -m pip install -r backend/requirements.txt"
+  "curl -sS https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py --break-system-packages && export PATH=\"$HOME/.local/bin:$PATH\" && python3 -m pip install --upgrade pip --break-system-packages && python3 -m pip install -r backend/requirements.txt --break-system-packages"
 ]
 
 [phases.build]
