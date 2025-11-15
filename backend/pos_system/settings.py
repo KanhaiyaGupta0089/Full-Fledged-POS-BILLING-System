@@ -209,13 +209,21 @@ CORS_ALLOWED_ORIGINS = env.list(
     ]
 )
 
+# Add Vercel domains if provided
+_vercel_domains = env.list('CORS_VERCEL_DOMAINS', default=[])
+CORS_ALLOWED_ORIGINS.extend(_vercel_domains)
+
 CORS_ALLOW_CREDENTIALS = True
 
 # Allow all origins in development (remove in production)
+# In production, allow all origins for now (you can restrict later)
+# This is needed because Vercel domains are dynamic
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
 else:
-    CORS_ALLOW_ALL_ORIGINS = False
+    # For production, allow all origins to support Vercel deployments
+    # You can restrict this later by setting CORS_ALLOWED_ORIGINS environment variable
+    CORS_ALLOW_ALL_ORIGINS = env.bool('CORS_ALLOW_ALL_ORIGINS', default=True)
 
 # Email settings
 EMAIL_BACKEND = env('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')

@@ -17,23 +17,31 @@ api.interceptors.request.use(
       try {
         const authData = JSON.parse(authStorage);
         // Zustand persist stores data in state property
-        const token = authData?.state?.token;
+        // Structure: { state: { token, user, role, isAuthenticated }, version: 0 }
+        let token = null;
+        
+        // Try multiple paths to find the token
+        if (authData?.state?.token) {
+          token = authData.state.token;
+        } else if (authData?.token) {
+          token = authData.token;
+        } else if (authData?.state?.access) {
+          token = authData.state.access;
+        } else if (authData?.access) {
+          token = authData.access;
+        }
+        
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         } else {
-          // Try alternative paths in case the structure is different
-          const altToken = authData?.token || authData?.state?.access || authData?.access;
-          if (altToken) {
-            config.headers.Authorization = `Bearer ${altToken}`;
-          } else {
+          // Only log warning in development to avoid console spam
+          if (import.meta.env.DEV) {
             console.warn('No token found in auth storage. Structure:', authData);
           }
         }
       } catch (error) {
         console.error('Error parsing auth token:', error);
       }
-    } else {
-      console.warn('No auth storage found in localStorage. Please log in.');
     }
     // Don't set Content-Type for FormData, let axios handle it
     if (config.data instanceof FormData) {
