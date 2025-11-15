@@ -94,24 +94,31 @@ class Command(BaseCommand):
         products = []
         for i in range(20):
             try:
-                product, created = Product.objects.get_or_create(
-                    name=f'Product {i+1}',
-                    defaults={
-                        'description': f'Description for Product {i+1}',
-                        'category': random.choice(category_objs),
-                        'brand': random.choice(brand_objs),
-                        'cost_price': Decimal(random.randint(100, 1000)),
-                        'selling_price': Decimal(random.randint(150, 1500)),
-                        'current_stock': random.randint(0, 100),
-                        'min_stock_level': 10,
-                        'max_stock_level': 200,
-                        'unit': 'pcs',
-                        'tax_rate': Decimal('18.00'),
-                        'is_active': True,
-                        'is_trackable': True,
-                        'created_by': admin_user
-                    }
-                )
+                # Generate unique SKU to avoid conflicts
+                sku = f'PROD-DUMMY-{i+1:04d}'
+                
+                # Use filter().first() instead of get_or_create to handle duplicates
+                product = Product.objects.filter(sku=sku).first()
+                
+                if not product:
+                    # Create new product with unique SKU
+                    product = Product.objects.create(
+                        name=f'Product {i+1}',
+                        sku=sku,
+                        description=f'Description for Product {i+1}',
+                        category=random.choice(category_objs),
+                        brand=random.choice(brand_objs),
+                        cost_price=Decimal(random.randint(100, 1000)),
+                        selling_price=Decimal(random.randint(150, 1500)),
+                        current_stock=random.randint(0, 100),
+                        min_stock_level=10,
+                        max_stock_level=200,
+                        unit='pcs',
+                        tax_rate=Decimal('18.00'),
+                        is_active=True,
+                        is_trackable=True,
+                        created_by=admin_user
+                    )
                 products.append(product)
                 
                 # Create stock entry if it doesn't exist
@@ -126,6 +133,14 @@ class Command(BaseCommand):
                 )
             except Exception as e:
                 self.stdout.write(self.style.WARNING(f'Failed to create product {i+1}: {e}'))
+                # Try to get existing product by SKU
+                try:
+                    sku = f'PROD-DUMMY-{i+1:04d}'
+                    product = Product.objects.filter(sku=sku).first()
+                    if product:
+                        products.append(product)
+                except:
+                    pass
         
         # If we don't have enough products, get some existing ones
         if len(products) < 10:

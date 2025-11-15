@@ -102,14 +102,15 @@ POS Billing System
         logger = logging.getLogger(__name__)
         logger.error(f'Failed to send invoice email: {error_message}', exc_info=True)
         
-        # Provide user-friendly error messages for common Gmail errors
+        # Provide user-friendly error messages for common email errors
         if '535' in error_message or 'BadCredentials' in error_message or 'Username and Password not accepted' in error_message:
             error_message = (
                 'Gmail authentication failed. Please check:\n'
                 '1. 2-Step Verification is enabled on your Google account\n'
                 '2. App Password is generated correctly (16 characters, no spaces)\n'
-                '3. App Password is correctly set in .env file (EMAIL_HOST_PASSWORD)\n'
-                '4. No quotes around the password in .env file\n'
+                '3. App Password is correctly set in environment variables (EMAIL_HOST_PASSWORD)\n'
+                '4. No quotes around the password in environment variables\n'
+                '5. On Railway: Add EMAIL_HOST_USER and EMAIL_HOST_PASSWORD in Railway environment variables\n'
                 'See backend/GMAIL_SETUP.md for detailed instructions.'
             )
         elif '534' in error_message or 'Application-specific password required' in error_message:
@@ -117,8 +118,29 @@ POS Billing System
                 'Gmail requires an App Password. Please:\n'
                 '1. Enable 2-Step Verification\n'
                 '2. Generate an App Password from Google Account settings\n'
-                '3. Update EMAIL_HOST_PASSWORD in .env file\n'
+                '3. Update EMAIL_HOST_PASSWORD in environment variables\n'
+                '4. On Railway: Add EMAIL_HOST_PASSWORD in Railway environment variables\n'
                 'See backend/GMAIL_SETUP.md for detailed instructions.'
+            )
+        elif 'Network is unreachable' in error_message or 'Connection refused' in error_message or 'timeout' in error_message.lower():
+            error_message = (
+                'Email server connection failed. This might be due to:\n'
+                '1. Network restrictions on Railway (SMTP ports may be blocked)\n'
+                '2. Email credentials not set in Railway environment variables\n'
+                '3. Firewall blocking SMTP connections\n'
+                'Solutions:\n'
+                '- Add EMAIL_HOST_USER and EMAIL_HOST_PASSWORD in Railway environment variables\n'
+                '- Consider using a service like SendGrid, Mailgun, or AWS SES instead of Gmail\n'
+                '- Check Railway logs for more details\n'
+                'For now, emails will be logged but not sent.'
+            )
+        elif 'Connection timed out' in error_message or 'timed out' in error_message.lower():
+            error_message = (
+                'Email server connection timed out. This might be due to:\n'
+                '1. Network restrictions on Railway\n'
+                '2. SMTP server is down or unreachable\n'
+                '3. Firewall blocking connections\n'
+                'Please check your email configuration and network settings.'
             )
         
         # Create failed notification record

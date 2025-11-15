@@ -234,11 +234,25 @@ EMAIL_USE_SSL = env.bool('EMAIL_USE_SSL', default=False)
 EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='gkanha1500@gmail.com')
-EMAIL_TIMEOUT = 10
+EMAIL_TIMEOUT = 30  # Increased timeout for network issues
 
-# Use console backend only if explicitly set or in DEBUG mode without email credentials
-if EMAIL_BACKEND == 'console' or (DEBUG and not EMAIL_HOST_USER):
+# Use console backend only if explicitly set to 'console' in environment
+# Don't auto-switch to console in production - let it fail with proper error messages
+if EMAIL_BACKEND == 'console':
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+elif not EMAIL_HOST_USER or not EMAIL_HOST_PASSWORD:
+    # If credentials are missing, use console backend only in DEBUG mode
+    # In production, this will help identify missing credentials
+    if DEBUG:
+        EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    else:
+        # In production, log a warning but still try SMTP (will fail with proper error)
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.warning(
+            'EMAIL_HOST_USER or EMAIL_HOST_PASSWORD not set. '
+            'Email sending will fail. Please set these environment variables.'
+        )
 
 # Redis settings
 REDIS_URL = env('REDIS_URL', default='redis://localhost:6379/0')
