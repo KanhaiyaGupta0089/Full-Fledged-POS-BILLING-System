@@ -20,7 +20,9 @@ SECRET_KEY = env('SECRET_KEY', default='django-insecure-change-this-in-productio
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG', default=True)
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1'])
+# ALLOWED_HOSTS: List of allowed host/domain names
+# For Railway: use 'web-production-12808.up.railway.app' or '*.railway.app' (without https:// or trailing slash)
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1', '*.railway.app'])
 
 # Application definition
 INSTALLED_APPS = [
