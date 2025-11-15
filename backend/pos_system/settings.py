@@ -22,7 +22,22 @@ DEBUG = env('DEBUG', default=True)
 
 # ALLOWED_HOSTS: List of allowed host/domain names
 # For Railway: use 'web-production-12808.up.railway.app' or '*.railway.app' (without https:// or trailing slash)
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1', '*.railway.app'])
+# Automatically clean up any URLs that might have been incorrectly set (remove protocol and trailing slash)
+_allowed_hosts_raw = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1', '*.railway.app'])
+ALLOWED_HOSTS = []
+for host in _allowed_hosts_raw:
+    # Remove protocol (http:// or https://)
+    host = host.replace('http://', '').replace('https://', '')
+    # Remove trailing slash
+    host = host.rstrip('/')
+    # Remove path if present
+    if '/' in host:
+        host = host.split('/')[0]
+    if host:  # Only add non-empty hosts
+        ALLOWED_HOSTS.append(host)
+# Ensure Railway wildcard is always included
+if '*.railway.app' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('*.railway.app')
 
 # Application definition
 INSTALLED_APPS = [
